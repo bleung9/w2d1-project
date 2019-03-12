@@ -4,8 +4,6 @@ var request = require("request");
 var secrets = require("./secrets.js");
 var fs = require('fs');
 
-console.log("HELLO FELLOW DENIZEN OF THE INTERNET! WELCOME TO THE GITHUB AVATAR DOWNLOADER!");
-
 function getRepoContributors(repoOwner, repoName, cb) {
   var options = {
     url: "https://api.github.com/repos/" + repoOwner + "/" + repoName + "/contributors",
@@ -20,18 +18,6 @@ function getRepoContributors(repoOwner, repoName, cb) {
   });
 };
 
-let owner = process.argv[2];
-let name = process.argv[3];
-
-getRepoContributors(owner, name, function(err, result) {
-  // console.log("Errors:", err);
-  for (element of result) {
-    downloadImageByURL(element.avatar_url, "avatars/" + element.login + ".jpg");
-  }
-  // console.log("Result:", result);
-});
-
-
 function downloadImageByURL(url, filePath) {
   request.get(url)
        .on("error", function(err) {
@@ -45,3 +31,25 @@ function downloadImageByURL(url, filePath) {
           console.log("Download complete");
        })
 }
+
+console.log("HELLO FELLOW DENIZEN OF THE INTERNET! WELCOME TO THE GITHUB AVATAR DOWNLOADER!");
+
+let input = process.argv;
+
+if (input.length === 3) {
+  console.log("YOU'RE AN IDIOT, YOU'RE MISSING A REPO NAME/OWNER!!!!!!!!!!!!!!!!!!");
+} else if (input.length === 2) {
+  console.log("YOU'RE A MASSIVE IDIOT, YOU'RE MISSING BOTH THE REPO NAME AND OWNER!!!!!!!!!!!!!!!!!!");
+} else {
+  let owner = process.argv[2];
+  let name = process.argv[3];
+  getRepoContributors(owner, name, function(err, result) {
+    // console.log("Errors:", err);
+    for (element of result) {
+      downloadImageByURL(element.avatar_url, "avatars/" + element.login + ".jpg");
+    }
+    // console.log("Result:", result);
+  });
+}
+
+
